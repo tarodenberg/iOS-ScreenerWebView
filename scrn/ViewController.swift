@@ -1,25 +1,43 @@
-//
-//  ViewController.swift
-//  scrn
-//
-//  Created by user on 11/10/16.
-//  Copyright © 2016 user. All rights reserved.
-//
-
 import UIKit
+import WebKit
 
-class ViewController: UIViewController {
-
+class ViewController: UIViewController, WKScriptMessageHandler, WKNavigationDelegate {
+    
+    var webView: WKWebView?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+        
+        let contentController = WKUserContentController();
+        contentController.add(
+            self,
+            name: "fidCallbackHandler"
+        )
+        
+        let config = WKWebViewConfiguration()
+        config.userContentController = contentController
+        
+        webView = WKWebView(
+            frame: self.view.frame,
+            configuration: config
+        )
+        
+        webView?.navigationDelegate = self
+       
+        view.addSubview(webView!)
     }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        let url = NSURL(string:"http://localhost/fidelity/pi/etf-screener?user_id=testws&experience=mobile-native")
+        let request = NSURLRequest(url: url as! URL)
+        let _ = self.webView?.load(request as URLRequest)
     }
-
-
+    
+    func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
+        if(message.name == "fidCallbackHandler") {
+            print("MobileInterface: \(message.body)")
+        }
+    }
+    
 }
-
