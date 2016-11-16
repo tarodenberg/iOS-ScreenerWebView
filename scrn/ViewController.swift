@@ -29,7 +29,7 @@ class ViewController: UIViewController, WKScriptMessageHandler, WKNavigationDele
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        let url = NSURL(string:"http://localhost/fidelity/pi/etf-screener?user_id=testws&experience=mobile-native")
+        let url = NSURL(string:"https://research2.fidelity.com/pi/etf-screener?user_id=testws&experience=mobile-native")
         let request = NSURLRequest(url: url as! URL)
         let _ = self.webView?.load(request as URLRequest)
     }
